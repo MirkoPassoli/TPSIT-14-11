@@ -31,11 +31,27 @@ let data = [
     }    
 ];
 
-// pag 2
-let page2schema = $('<h2 class="title"></h2><div class="grid grid-tre"><div class="grid-cell uno"><p class="desc"></p></div><div class="grid-cell due image-container"><img><div class="carosello"><span class="left">&lt;</span><span class="right">&gt;</span></div></div></div>');
+// pag 1
+let page1schema = '<div class="grid grid-tre"></div>';
 
+// pag 2
+let page2schema = '<h2 class="title"></h2><button class="back" onclick="loadPage1()">Back</button><div class="grid grid-tre"><div class="grid-cell uno"><p class="desc"></p></div><div class="grid-cell due image-container"><img><div class="carosello"><span class="left">&lt;</span><span class="right">&gt;</span></div></div></div>';
+
+function loadPage1() {
+    $('.container').empty();
+    $('.container').append(page1schema);
+    for (let i = 0; i < data.length; i++) {
+        const element = data[i];
+        let c = $('<div></div>').addClass('grid-cell');
+        c.append($('<h2></h2>').html(element.nome));
+        c.append($('<p></p>').html(element.descrizione));
+        c.append($('<button></button>').html('More...').click(()=>{loadPage2(element)}));
+        $('.container > .grid').append(c);
+    }
+}
+loadPage1();
 function loadPage2(d) {
-    $('.container').append(page2schema);
+    $('.container').empty().append(page2schema);
     $('.title').html(d.nome);
     $('.desc').text(d.descrizione + " ...").click(function () {
         $(this).text(d.descrizione + " " + d.descrizioneLunga);
@@ -47,15 +63,25 @@ function loadPage2(d) {
     $('.carosello .right').click(function () {
         nextImg(d);
     });
-    setInterval(function() {nextImg(d)}, 5000);
+    nextImg(d);
 }
 
+let timeoutPrevImg, timeoutNextImg;
+
 function prevImg(d) {
+    if (timeoutPrevImg !== undefined)
+        clearTimeout(timeoutPrevImg);
+
     let a = ($('.image-container > img').attr('ind') - 1 + d.foto.length)%d.foto.length;
     $('.image-container > img').attr("src", d.foto[a]).attr('ind', a);
+    timeoutPrevImg = setTimeout(function() {prevImg(d)}, 3000);
 }
 
 function nextImg(d) {
+    if (timeoutNextImg !== undefined)
+        clearTimeout(timeoutNextImg);
+
     let a = ($('.image-container > img').attr('ind') + 1 + d.foto.length)%d.foto.length;
     $('.image-container > img').attr("src", d.foto[a]).attr('ind', a);
+    timeoutNextImg = setTimeout(function() {nextImg(d)}, 3000);
 }

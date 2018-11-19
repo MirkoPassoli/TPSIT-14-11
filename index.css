@@ -39,3 +39,11 @@ p.desc {
 .carosello .right {
     float: right;
 }
+
+.title {
+    display: inline-block;
+}
+
+.back {
+    float: right;
+}
